@@ -32,9 +32,8 @@
         </template>
         <v-date-picker
           v-model="selectedDate"
-          :min="minDate"
-          :max="maxDate"
           locale="es-ES"
+          :allowed-dates="allowedDates"
           @input="datePicker = false"
         ></v-date-picker>
       </v-menu>
@@ -61,8 +60,7 @@ export default {
     characters: [],
     selectedCharacter: 0,
     selectedDate: null,
-    minDate: '',
-    maxDate: '',
+    availableDates: [],
     datePicker: false,
     dateRules: [
       (v) => new Date(v).getDay() !== 6 || 'No se puede audicionar un domingo',
@@ -70,9 +68,7 @@ export default {
   }),
   mounted() {
     this.getCharacters()
-
-    this.minDate = new Date(this.convocation.startDate).toISOString()
-    this.maxDate = new Date(this.convocation.endDate).toISOString()
+    this.getAvailableDates()
   },
   methods: {
     async getCharacters() {
@@ -80,6 +76,16 @@ export default {
         `/play/${this.play.playId}/characters`
       )
       this.characters = characters
+    },
+    async getAvailableDates() {
+      const { data: availableDates } = await this.$axios.get(
+        `/convocation/${this.convocation.id}/dates`
+      )
+
+      this.availableDates = availableDates
+    },
+    allowedDates(v) {
+      return this.availableDates.includes(v)
     },
     endApplication() {
       this.$emit('endApplication', {

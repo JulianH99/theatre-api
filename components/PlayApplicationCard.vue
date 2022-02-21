@@ -25,6 +25,9 @@
           </v-btn>
         </template>
       </v-snackbar>
+      <v-snackbar v-model="errorCreatingStudent" color="red">
+        El documento o código ingresado ya se encuentra registrado
+      </v-snackbar>
     </v-card-text>
     <v-card-text v-else>
       <PlayApplicationForm
@@ -63,6 +66,7 @@ export default {
     applicationForm: false,
     applicationSubmitted: false,
     applicationError: false,
+    errorCreatingStudent: false,
   }),
   mounted() {
     this.fetchItems()
@@ -93,7 +97,9 @@ export default {
         this.student = res
         this.applicationForm = true
       } catch (e) {
-        // show snackbaar
+        if (e.response.status === 422) {
+          this.errorCreatingStudent = true
+        }
       }
     },
     async endApplication(info) {
