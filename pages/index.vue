@@ -1,6 +1,11 @@
 <template>
   <v-row>
     <v-col>
+      <v-flex class="mb-2">
+        <v-btn color="info" to="/application-list">
+          Consultar convocatorias
+        </v-btn>
+      </v-flex>
       <PlayList :plays="plays" @apply="apply" />
     </v-col>
     <v-col>
