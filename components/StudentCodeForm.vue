@@ -3,7 +3,7 @@
     <v-text-field
       v-model="studentCode"
       :rules="rules"
-      label="Student Code"
+      label="Código estudiantil"
       required
     ></v-text-field>
 
@@ -11,13 +11,12 @@
       :disabled="!valid"
       color="success"
       class="mr-4"
-      @click="onSubmitForm"
+      @click="$emit('searchUser', studentCode)"
     >
-      Validate
+      Aplicar
     </v-btn>
   </v-form>
 </template>
-
 
 <script>
 export default {
@@ -26,14 +25,13 @@ export default {
     student: {},
     studentCode: '',
     rules: [
-      (v) => !!v || 'Code is required',
-      (v) => /\d+/.test(v) || 'The code is only a numbers',
+      (v) => !!v || 'El código es requerido',
+      (v) => /\d+/.test(v) || 'El código debe de tener solo números',
     ],
   }),
-  props: ['searchUser'],
   methods: {
     onSubmitForm() {
-      this.$props.searchUser(this.studentCode)
+      this.searchUser(this.studentCode)
     },
   },
 }

@@ -6,8 +6,8 @@
           <v-select
             v-model="docType"
             :items="docTypeItems"
-            :rules="[(v) => !!v || 'Item is required']"
-            label="Document type"
+            :rules="[(v) => !!v || 'El tipo de documento es requerido']"
+            label="Tipo de documento"
             item-text="name"
             item-value="documentTypeId"
             required
@@ -17,7 +17,7 @@
           <v-text-field
             v-model="documentNumber"
             :rules="numberRules"
-            label="Document Number"
+            label="Número de documento"
             required
           ></v-text-field>
         </v-col>
@@ -27,7 +27,7 @@
           <v-text-field
             v-model="names"
             :rules="nameRules"
-            label="Names"
+            label="Nombres"
             required
           ></v-text-field>
         </v-col>
@@ -35,7 +35,7 @@
           <v-text-field
             v-model="lasNames"
             :rules="nameRules"
-            label="Last Names"
+            label="Apellidos"
             required
           ></v-text-field>
         </v-col>
@@ -43,7 +43,7 @@
       <v-text-field
         v-model="studentCode"
         :rules="numberRules"
-        label="Student Code"
+        label="Código estudiantil"
         required
       ></v-text-field>
 
@@ -57,8 +57,8 @@
       <v-select
         v-model="career"
         :items="careerItems"
-        :rules="[(v) => !!v || 'Item is required']"
-        label="Career"
+        :rules="[(v) => !!v || 'La carrera es requerida']"
+        label="Carrera"
         item-text="name"
         item-value="careerId"
         required
@@ -73,10 +73,10 @@
         offset-y
         min-width="auto"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-text-field
             v-model="date"
-            label="Birthday date"
+            label="Fecha de nacimiento"
             prepend-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -102,15 +102,24 @@
         class="mr-4"
         @click="onSubmitForm"
       >
-        Validate
+        Registrarse
       </v-btn>
     </v-container>
   </v-form>
 </template>
 
-
 <script>
 export default {
+  props: {
+    docTypeItems: {
+      type: Array,
+      default: () => [],
+    },
+    careerItems: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data: () => ({
     // Form Valid
     valid: true,
@@ -124,13 +133,15 @@ export default {
 
     // Validation Rules Form
     numberRules: [
-      (v) => !!v || 'Field is required',
-      (v) => /\d+/.test(v) || 'Number must be valid',
+      (v) => !!v || 'El campo es requerido',
+      (v) => /\d+/.test(v) || 'El campo debe de tener solo números',
     ],
-    nameRules: [(v) => !!v || 'Name is required'],
+    nameRules: [(v) => !!v || 'El nombre es requerido'],
     emailRules: [
-      (v) => !!v || 'E-mail is required',
-      (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      (v) => !!v || 'El email es requerido',
+      (v) =>
+        v.includes('@correo.udistrital.edu.co') ||
+        'El correo debe ser un correo institucional',
     ],
 
     // DocType Select
@@ -148,7 +159,6 @@ export default {
       val && setTimeout(() => (this.activePicker = 'YEAR'))
     },
   },
-  props: ['createUser', 'docTypeItems', 'careerItems'],
   methods: {
     onSubmitForm() {
       const user = {
@@ -161,7 +171,7 @@ export default {
         code: this.studentCode,
         careerId: this.career,
       }
-      this.$props.createUser(user)
+      this.$emit('createUser', user)
     },
     save(date) {
       this.$refs.menu.save(date)
