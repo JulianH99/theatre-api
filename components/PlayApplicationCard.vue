@@ -93,8 +93,8 @@ export default {
     },
     async createUser(user) {
       try {
-        const res = await this.$axios.post('/student', user)
-        this.student = res
+        const { data: student } = await this.$axios.post('/student', user)
+        this.student = student
         this.applicationForm = true
       } catch (e) {
         if (e.response.status === 422) {

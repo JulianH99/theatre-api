@@ -122,7 +122,7 @@ export default {
   },
   data: () => ({
     // Form Valid
-    valid: true,
+    valid: false,
 
     // Inputs model form
     studentCode: '',
@@ -140,7 +140,7 @@ export default {
     emailRules: [
       (v) => !!v || 'El email es requerido',
       (v) =>
-        v.includes('@correo.udistrital.edu.co') ||
+        v.includes('udistrital.edu.co') ||
         'El correo debe ser un correo institucional',
     ],
 
@@ -161,17 +161,20 @@ export default {
   },
   methods: {
     onSubmitForm() {
-      const user = {
-        docNumber: this.documentNumber,
-        documentTypeId: this.docType,
-        names: this.names,
-        lastName: this.lasNames,
-        birthDate: this.date,
-        email: this.email,
-        code: this.studentCode,
-        careerId: this.career,
+      this.$refs.form.validate()
+      if (this.valid) {
+        const user = {
+          docNumber: this.documentNumber,
+          documentTypeId: this.docType,
+          names: this.names,
+          lastName: this.lasNames,
+          birthDate: this.date,
+          email: this.email,
+          code: this.studentCode,
+          careerId: this.career,
+        }
+        this.$emit('createUser', user)
       }
-      this.$emit('createUser', user)
     },
     save(date) {
       this.$refs.menu.save(date)
