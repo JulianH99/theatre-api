@@ -1,12 +1,17 @@
 <template>
   <div>
     <v-data-table :headers="headers" :items="plays" class="elevation-1">
-      <template v-slot:item="row">
+      <template #item="row">
         <tr>
           <td>{{ row.item.title }}</td>
           <td>{{ row.item.playDate }}</td>
           <td>
-            <v-btn elevation="2" color="success" @click="goToPanel(row.item.playId)">Entrar</v-btn>
+            <v-btn
+              elevation="2"
+              color="success"
+              @click="goToPanel(row.item.playId)"
+              >Entrar</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -17,10 +22,7 @@
 <script>
 export default {
   name: 'PlayList',
-  async asyncData(context) {
-    const res = await context.$axios.get('/play')
-    return { plays: res.data }
-  },
+  async asyncData(context) {},
   data() {
     return {
       headers: [
@@ -31,13 +33,18 @@ export default {
       plays: [],
     }
   },
+  mounted() {
+    this.getPlays()
+  },
   methods: {
-    goToPanel(id){
-      this.$router.push(`/play-controls/${id}`); 
-    }
-  }
+    goToPanel(id) {
+      this.$router.push(`/play-controls/${id}`)
+    },
+    async getPlays() {
+      this.plays = await this.$axios.$get('/play')
+    },
+  },
 }
 </script>
 
-<style>
-</style>
+<style></style>

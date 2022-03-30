@@ -1,11 +1,7 @@
 <template>
   <div>
-    <p>Tab asistencia</p>
-
-    <div v-if="activePlay && activePlay.title">
-      <h2 class="text-h1">{{ activePlay.title }}</h2>
-
-      <h3 class="text-h3 mt-9">Lista de estudiantes</h3>
+    <div v-if="activePlay && activePlay.title" class="mb-4 mx-3">
+      <h3 class="text-h4 mt-3">Lista de estudiantes</h3>
       <v-data-table
         v-if="students.length > 0"
         class="mt-3"
@@ -43,8 +39,13 @@
 <script>
 export default {
   name: 'AssistanceTab',
+  props: {
+    activePlay: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data: () => ({
-    activePlay: {},
     showSuccessSnackbar: false,
     showErrorSnackbar: false,
     students: [],
@@ -76,13 +77,6 @@ export default {
   },
   methods: {
     async fetchActivePlay() {
-      const activePlay = await this.$axios.$get('/tab/assistance', {
-        headers: {
-          'X-User-Id': 1,
-        },
-      })
-      this.activePlay = activePlay.play
-
       const students = await this.$axios.$get(
         `/play/${this.activePlay.playId}/event/${this.activePlay.playEventId}/students`,
         {

@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-toolbar flat dark>
-      <v-toolbar-title>Acciones para la obra: {{play.title}}</v-toolbar-title>
+      <v-toolbar-title>Acciones para la obra: {{ play.title }}</v-toolbar-title>
     </v-toolbar>
     <v-tabs vertical>
       <v-tab>
         <v-icon left> mdi-account </v-icon>
-        Option 1
+        Asistencia
       </v-tab>
       <v-tab>
         <v-icon left> mdi-lock </v-icon>
@@ -14,75 +14,63 @@
       </v-tab>
       <v-tab>
         <v-icon left> mdi-access-point </v-icon>
-        Option 3
+        Certificados
       </v-tab>
 
       <v-tab-item>
-        <v-card flat>
-          <v-card-text>
-            <p>
-              Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi
-              ac felis. Etiam feugiat lorem non metus. Sed a libero.
-            </p>
-
-            <p>
-              Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus.
-              Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.
-              Aliquam lobortis. Aliquam lobortis. Suspendisse non nisl sit amet
-              velit hendrerit rutrum.
-            </p>
-
-            <p class="mb-0">
-              Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu.
-              Pellentesque libero tortor, tincidunt et, tincidunt eget, semper
-              nec, quam. Phasellus blandit leo ut odio.
-            </p>
-          </v-card-text>
-        </v-card>
+        <AssistanceTab
+          v-if="assistanceAvailable.active"
+          :active-play="assistanceAvailable.play"
+        />
+        <v-alert v-else class="mt-5 mx-3" type="warning">
+          Funcionalidad inactiva
+        </v-alert>
       </v-tab-item>
       <v-tab-item>
         <AllowanceList />
       </v-tab-item>
       <v-tab-item>
-        <v-card flat>
-          <v-card-text>
-            <p>
-              Fusce a quam. Phasellus nec sem in justo pellentesque facilisis.
-              Nam eget dui. Proin viverra, ligula sit amet ultrices semper,
-              ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In
-              dui magna, posuere eget, vestibulum et, tempor auctor, justo.
-            </p>
-
-            <p class="mb-0">
-              Cras sagittis. Phasellus nec sem in justo pellentesque facilisis.
-              Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec
-              quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam
-              at tortor in tellus interdum sagittis.
-            </p>
-          </v-card-text>
-        </v-card>
+        <CertificatesTab v-if="certificatesAvailable" :play="play" />
+        <v-alert v-else class="mt-5 mx-3" type="warning">
+          Funcionalidad inactiva
+        </v-alert>
       </v-tab-item>
     </v-tabs>
   </v-card>
 </template>
 
 <script>
+import AssistanceTab from '@/components/AssistanceTab.vue'
+import CertificatesTab from '@/components/CertificatesTab.vue'
 export default {
   name: 'PlayControls',
-  async asyncData(context) {
-    const resPlay = await context.$axios.get(`/play/${context.route.params.id}`)
-    return { play: resPlay.data[0] }
-  },
+  components: { AssistanceTab, CertificatesTab },
+
   data() {
     return {
-      play: {}
+      play: {},
+      assistanceAvailable: {},
+      certificatesAvailable: {},
     }
   },
   mounted() {
-    // console.log(this.$route.params.id)
+    this.getData()
+  },
+  methods: {
+    async getData() {
+      const playId = this.$route.params.id
+      const play = await this.$axios.$get(`/play/${playId}`)
+
+      const assistanceAvailable = await this.$axios.$get(
+        `/tab/assistance/${playId}`
+      )
+
+      this.play = play
+      this.assistanceAvailable = assistanceAvailable
+      this.certificatesAvailable = play.state === 0
+    },
   },
 }
 </script>
 
-<style>
-</style>
+<style></style>

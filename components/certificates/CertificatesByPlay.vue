@@ -1,25 +1,5 @@
 <template>
   <div class="d-flex justify-center certificates-container pb-6">
-    <div class="play-selector">
-      <v-list>
-        <v-subheader>Obras</v-subheader>
-        <v-list-item-group>
-          <v-list-item
-            v-for="play in plays"
-            :key="play.playId"
-            @click="getStudents(play)"
-          >
-            <v-list-item-content>
-              <v-list-item-title>{{ play.title }} </v-list-item-title>
-              <v-list-item-subtitle class="play-content">
-                <span>Tipo de obra: {{ play.playType }}</span>
-                <span>País: {{ play.country }}</span>
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </div>
     <div class="students-list">
       <template v-if="selectedPlay.title">
         <template v-if="students && students.length > 0">
@@ -67,9 +47,14 @@
 <script>
 export default {
   name: 'CertificatesByPlay',
+  props: {
+    play: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data: () => ({
     tab: '',
-    plays: [],
     students: null,
     selectedPlay: {},
     loading: false,
@@ -104,19 +89,9 @@ export default {
     },
   },
   mounted() {
-    this.getInactivePlays()
+    this.getStudents(this.play)
   },
   methods: {
-    async getInactivePlays() {
-      const plays = await this.$axios.$get('/play', {
-        params: {
-          state: 0,
-        },
-      })
-
-      this.plays = plays
-    },
-
     async getStudents(play) {
       this.selectedPlay = play
       const students = await this.$axios.$get(`/play/${play.playId}/students`)
@@ -149,13 +124,8 @@ export default {
 </script>
 
 <style>
-.certificates-container {
-  gap: 15px;
-}
-
-.play-selector,
 .students-list {
-  width: 49%;
+  width: 95%;
   flex-shrink: 0;
 }
 

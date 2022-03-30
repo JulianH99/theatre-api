@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p>Tab certificados</p>
-
     <v-tabs v-model="tab">
       <v-tab>Por obra</v-tab>
       <v-tab>Por estudiante</v-tab>
@@ -9,7 +7,7 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item>
-        <CertificatesByPlay />
+        <CertificatesByPlay :play="play" />
       </v-tab-item>
       <v-tab-item>
         <CertificatesByStudent />
@@ -25,6 +23,12 @@ import CertificatesByStudent from '@/components/certificates/CertificatesByStude
 export default {
   name: 'CertificatesTab',
   components: { CertificatesByPlay, CertificatesByStudent },
+  props: {
+    play: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data: () => ({
     tab: '',
   }),

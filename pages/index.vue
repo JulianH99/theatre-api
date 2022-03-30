@@ -6,7 +6,6 @@
         <v-text-field
           v-model="id_number"
           label="Numero C.C."
-          :rules="rules"
           hide-details="auto"
         ></v-text-field>
         <v-btn
@@ -32,16 +31,14 @@ export default {
     }
   },
   methods: {
-    loginAction() {
-      this.$axios
-        .post('/login', { code: this.id_number })
-        .then(() => {
-          this.$router.push('/play-list')
-        })
-        .catch((err) => {
-          console.log(err)
-          this.id_number = ''
-        })
+    async loginAction() {
+      try {
+        const data = await this.$axios.$post('/login', { code: this.id_number })
+        localStorage.setItem('userId', data.userId)
+        this.$router.push('/play-list')
+      } catch (e) {
+        console.log(e)
+      }
     },
   },
 }
