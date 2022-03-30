@@ -1,51 +1,54 @@
 <template>
-  <v-row>
-    <v-col>
-      <v-flex class="mb-2">
-        <v-btn color="info" to="/application-list">
-          Consultar convocatorias
+  <div class="d-flex justify-center">
+    <v-card elevation="24" outlined max-width="344">
+      <v-card-text>
+        <p class="text-h4 text--primary">Ingrese su Cedula de ciudadania</p>
+        <v-text-field
+          v-model="id_number"
+          label="Numero C.C."
+          :rules="rules"
+          hide-details="auto"
+        ></v-text-field>
+        <v-btn
+          class="login-button"
+          color="primary"
+          elevation="2"
+          large
+          @click="loginAction()"
+        >
+          Ingresar
         </v-btn>
-      </v-flex>
-      <PlayList :plays="plays" @apply="apply" />
-    </v-col>
-    <v-col>
-      <PlayApplicationCard
-        v-if="selectedPlay"
-        :play="selectedPlay"
-        :convocation="selectedPlayConvocation"
-        @endApplication="endApplication"
-      />
-    </v-col>
-    <v-snackbar v-model="successfulApplication">
-      La aplicación a la convocatoria se ha registrado
-    </v-snackbar>
-  </v-row>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage',
-  async asyncData(context) {
-    const res = await context.$axios.get('/play')
-    return { plays: res.data }
-  },
+  name: 'LoginPage',
   data() {
     return {
-      plays: [],
-      selectedPlay: null,
-      selectedPlayConvocation: null,
-      successfulApplication: false,
+      id_number: '',
     }
   },
   methods: {
-    apply(play, convocation) {
-      this.selectedPlay = play
-      this.selectedPlayConvocation = convocation
-    },
-    endApplication() {
-      this.selectedPlay = null
-      this.successfulApplication = true
+    loginAction() {
+      this.$axios
+        .post('/login', { code: this.id_number })
+        .then(() => {
+          this.$router.push('/play-list')
+        })
+        .catch((err) => {
+          console.log(err)
+          this.id_number = ''
+        })
     },
   },
 }
 </script>
+
+<style scoped>
+.login-button {
+  margin-top: 10px;
+}
+</style>
