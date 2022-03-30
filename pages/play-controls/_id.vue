@@ -27,7 +27,10 @@
         </v-alert>
       </v-tab-item>
       <v-tab-item>
-        <AllowanceList />
+        <AllowanceList v-if="allowanceAvailable" />
+        <v-alert v-else class="mt-5 mx-3" type="warning">
+          Funcionalidad inactiva
+        </v-alert>
       </v-tab-item>
       <v-tab-item>
         <CertificatesTab v-if="certificatesAvailable" :play="play" />
@@ -51,6 +54,7 @@ export default {
       play: {},
       assistanceAvailable: {},
       certificatesAvailable: {},
+      allowanceAvailable: false,
     }
   },
   mounted() {
@@ -65,9 +69,14 @@ export default {
         `/tab/assistance/${playId}`
       )
 
+      const AllowanceAvailable = await this.$axios.$get(
+        `/tab/allowance/${playId}`
+      )
+
       this.play = play
       this.assistanceAvailable = assistanceAvailable
       this.certificatesAvailable = play.state === 0
+      this.allowanceAvailable = AllowanceAvailable.active
     },
   },
 }

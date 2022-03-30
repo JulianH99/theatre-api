@@ -14,6 +14,12 @@
       </template>
     </v-data-table>
 
+    <div class="d-flex justify-end mt-4">
+      <v-btn color="success" :loading="loading" @click="generateReport()">
+        Generar Informe
+      </v-btn>
+    </div>
+
     <v-dialog v-model="dialog" width="500">
       <v-card>
         <v-card-title class="text-h5">
@@ -21,11 +27,21 @@
         </v-card-title>
 
         <v-card-text>
-          <v-list-item two-line v-for="(item, index) in active_student.asistance" :key="index">
+          <v-list-item
+            two-line
+            v-for="(item, index) in active_student.asistance"
+            :key="index"
+          >
             <v-list-item-content>
-              <v-list-item-title>{{item.type}} in theater {{item.theater}}</v-list-item-title>
-              <v-list-item-subtitle>{{item.date}}</v-list-item-subtitle>
-              <v-list-item-subtitle>{{item.start_time}} - {{item.end_time}}</v-list-item-subtitle>
+              <v-list-item-title
+                >{{ item.type }} in theater
+                {{ item.theater }}</v-list-item-title
+              >
+              <v-list-item-subtitle>{{ item.date }}</v-list-item-subtitle>
+              <v-list-item-subtitle
+                >{{ item.start_time }} -
+                {{ item.end_time }}</v-list-item-subtitle
+              >
             </v-list-item-content>
           </v-list-item>
         </v-card-text>
@@ -54,6 +70,7 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       students: [],
+      loading: false,
     }
   },
   mounted() {
@@ -68,6 +85,15 @@ export default {
     seeDetails(student) {
       this.active_student = student
       this.dialog = true
+    },
+    async generateReport() {
+      this.loading = true
+      const playId = this.$route.params.id
+      const res = await this.$axios.post(`/allowance/${playId}/report`, {
+        professor_id: 3,
+      })
+      console.log(res)
+      this.loading = false
     },
   },
 }

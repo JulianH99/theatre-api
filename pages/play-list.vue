@@ -41,7 +41,7 @@ export default {
       this.$router.push(`/play-controls/${id}`)
     },
     async getPlays() {
-      this.plays = await this.$axios.$get('/play')
+      this.plays = await this.$axios.$get('/plays')
     },
   },
 }
